@@ -157,7 +157,6 @@ struct Response *route(struct Request *request) {
     };
     memcpy(response, &def, sizeof(struct Response));
     return response;
-
 }
 
 int runServer() {
@@ -226,5 +225,4 @@ int runServer() {
     free(ROUTING_TABLE);
 
     return EXIT_SUCCESS;
-
 }
