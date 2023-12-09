@@ -32,7 +32,7 @@ target_link_libraries(servertest PRIVATE ws2_32)
 ```
 
 ## How to use
-Three steps: setup the routing table, rgister all routes and run the server
+Three steps: setup the routing table, register all routes and run the server
 
 Example:
 
