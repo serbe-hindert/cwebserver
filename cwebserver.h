@@ -15,10 +15,10 @@
 struct Request {
     char *method;
     char *url;
-    int queryParametersCount;
+    unsigned int queryParametersCount;
     char *queryParameters;
     char *bodyContentType;
-    int bodyLength;
+    unsigned int bodyLength;
     char *body;
 };
 
@@ -36,8 +36,8 @@ struct RoutingTableEntry {
 };
 
 struct RoutingTable {
-    int currentCount;
-    int routesCount;
+    unsigned int currentCount;
+    unsigned int routesCount;
     struct RoutingTableEntry *entries;
 };
 
