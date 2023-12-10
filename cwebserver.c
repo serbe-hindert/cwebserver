@@ -1,5 +1,11 @@
 #include "cwebserver.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <winsock2.h>
+
+
 struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _Bool *hasBody);
 void handleRequest(SOCKET client);
 struct Response *route(struct Request *request);

@@ -1,11 +1,6 @@
 #ifndef CWEBSERVER_LIBRARY_H
 #define CWEBSERVER_LIBRARY_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <winsock2.h>
-
 #define PORT 8080
 #define MAX_REQUEST_SIZE 1024
 
