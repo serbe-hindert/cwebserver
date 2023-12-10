@@ -32,6 +32,7 @@ target_link_libraries(servertest PRIVATE ws2_32)
 ```
 
 ## How to use
+The server will run on port 8080, to change that change the define in the header and recompile.
 Three steps: setup the routing table, register all routes and run the server
 
 Example:
