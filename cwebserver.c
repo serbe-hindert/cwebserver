@@ -43,16 +43,16 @@ struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _
     struct Request *request = malloc(sizeof(struct Request));
 
     // METHOD
-    const int methodLength = strchr(plain, ' ') - plain;
+    int currentInterestLength = strchr(plain, ' ') - plain;
     // allocate one extra for the null terminator
-    request->method = malloc(methodLength + 1);
-    strncpy(request->method, plain, methodLength);
-    request->method[methodLength] = '\0';
+    request->method = malloc(currentInterestLength + 1);
+    strncpy(request->method, plain, currentInterestLength);
+    request->method[currentInterestLength] = '\0';
 
     // URL + QUERY PARAMETERS
-    const char *ofCurrentInterestPointer = plain + methodLength + 1;
+    const char *ofCurrentInterestPointer = plain + currentInterestLength + 1;
     const int entireUrlLength = strchr(ofCurrentInterestPointer, ' ') - ofCurrentInterestPointer;
-    int urlLength = entireUrlLength;
+    currentInterestLength = entireUrlLength;
     const char *queryParametersOffset = strchr(ofCurrentInterestPointer, '?');
 
 
@@ -61,12 +61,12 @@ struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _
         *hasQueryParamters = 1;
         // shorten the url length
         const int queryParameterLength = entireUrlLength - (queryParametersOffset - ofCurrentInterestPointer);
-        urlLength -= queryParameterLength;
+        currentInterestLength -= queryParameterLength;
 
         request->queryParameters = malloc(queryParameterLength + 1);
         request->queryParametersCount = 1;
 
-        for (int i = 1; i < entireUrlLength - urlLength; i++) {
+        for (int i = 1; i < entireUrlLength - currentInterestLength; i++) {
             if (queryParametersOffset[i] == '&') {
                 request->queryParameters[i - 1] = '\0';
                 request->queryParametersCount++;
@@ -76,11 +76,11 @@ struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _
                 request->queryParameters[i - 1] = queryParametersOffset[i];
             }
         }
-        request->queryParameters[entireUrlLength - urlLength] = '\0'; // Add null terminator
+        request->queryParameters[entireUrlLength - currentInterestLength] = '\0'; // Add null terminator
     }
-    request->url = malloc(urlLength + 1);
-    strncpy(request->url, ofCurrentInterestPointer, urlLength);
-    request->url[urlLength] = '\0'; // Add null terminator
+    request->url = malloc(currentInterestLength + 1);
+    strncpy(request->url, ofCurrentInterestPointer, currentInterestLength);
+    request->url[currentInterestLength] = '\0'; // Add null terminator
 
     // CONTENT
     // forward pointer to Content-Type:
@@ -88,9 +88,9 @@ struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _
     if (ofCurrentInterestPointer != NULL) {
         *hasBody = 1;
         ofCurrentInterestPointer += 14;
-        int currentAttributeLength = strchr(ofCurrentInterestPointer, '\n') - ofCurrentInterestPointer;
-        request->bodyContentType = malloc(currentAttributeLength + 1);
-        strncpy(request->bodyContentType, ofCurrentInterestPointer, currentAttributeLength);
+        currentInterestLength = strchr(ofCurrentInterestPointer, '\n') - ofCurrentInterestPointer;
+        request->bodyContentType = malloc(currentInterestLength + 1);
+        strncpy(request->bodyContentType, ofCurrentInterestPointer, currentInterestLength);
         // forward pointer to Content-Length
         ofCurrentInterestPointer = strstr(ofCurrentInterestPointer, "Content-Length:");
         if (ofCurrentInterestPointer != NULL) {
@@ -100,8 +100,6 @@ struct Request *translatePlainToRequest(char *plain, _Bool *hasQueryParamters, _
             strncpy(request->body, ofCurrentInterestPointer, request->bodyLength);
         }
     }
-
-
 
     return request;
 }
@@ -127,13 +125,16 @@ void handleRequest(SOCKET client) {
         request->bodyLength = 0;
         free(request->body);
     }
-
     free(request);
 
     // 38 staticly counted
-    int responseLength = 38 + strlen(response->contentType) + strlen(response->content);
+    const int responseLength = 38 + strlen(response->contentType) + strlen(response->content);
     char *textResponse = malloc(responseLength);
     snprintf(textResponse, responseLength, "HTTP/1.1 %d\r\nContent-Type: %s\r\n\r\n%s", response->httpCode, response->contentType, response->content);
+
+    free(response->contentType);
+    free(response->content);
+    free(response);
 
     send(client, textResponse, strlen(textResponse), 0);
 
