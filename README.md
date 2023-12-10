@@ -40,11 +40,13 @@ Example:
 #include "lib/cwebserver.h"
 
 struct Response *abc(struct Request *request) {
-    return memcpy(malloc(sizeof(struct Response)), &(struct Response){
-        .httpCode = 200,
-        .contentType = "text/plain",
-        .content = "abc !!!"
-    }, sizeof(struct Response));
+    struct Response *response = malloc(sizeof(struct Response));
+    response->httpCode = 200;
+    response->contentType = malloc(strlen("text/plain") + 1);
+    memcpy(response->contentType, "text/plain", strlen("text/plain") + 1);
+    response->content = malloc(strlen("abc") + 1);
+    memcpy(response->content, "abc", strlen("abc") + 1);
+    return response;
 }
 
 int main() {
