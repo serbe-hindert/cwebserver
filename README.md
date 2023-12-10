@@ -12,7 +12,7 @@ add_library(cwebserver STATIC lib/cwebserver.c)
 
 ...
 
-target_link_libraries(servertest PRIVATE cwebserver ${CMAKE_CURRENT_SOURCE_DIR}lib/libcwebserver.a)
+target_link_libraries(servertest PRIVATE cwebserver ${CMAKE_CURRENT_SOURCE_DIR}/lib/libcwebserver.a)
 target_link_libraries(servertest PRIVATE ws2_32)
 ```
 
@@ -26,7 +26,7 @@ add_library(cwebserver STATIC lib/cwebserver.c)
 set(CMAKE_C_STANDARD 23)
 
 add_executable(servertest main.c)
-target_link_libraries(servertest PRIVATE cwebserver ${CMAKE_CURRENT_SOURCE_DIR}lib/libcwebserver.a)
+target_link_libraries(servertest PRIVATE cwebserver ${CMAKE_CURRENT_SOURCE_DIR}/lib/libcwebserver.a)
 target_link_libraries(servertest PRIVATE ws2_32)
 
 ```
